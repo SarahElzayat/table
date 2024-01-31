@@ -33,7 +33,7 @@ const FinalTable = ({
   // currentPage,
   // pageSize,
   selectRows = false,
-  manualSorting = false,
+  manualSorting = true,
   pageSizeOptions = [10, 20, 30, 40, 50, 100],
 }) => {
   const finalData = React.useMemo(() => data, [data]);
@@ -75,7 +75,7 @@ const FinalTable = ({
     getCoreRowModel: getCoreRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
     // getFilteredRowModel: getFilteredRowModel(),
-    // getSortedRowModel: getSortedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getRowId: (row) => row.id,
     state: {
       rowSelection: selectedRows,
@@ -189,10 +189,9 @@ const FinalTable = ({
                                                   pageSize
                                                 );
                                               } else {
-                                                tableInstance.setSorting({
-                                                  id: columnEl.id,
-                                                  desc: false,
-                                                });
+                                                columnEl.column.toggleSorting(
+                                                  0
+                                                );
                                               }
                                             },
                                           },
@@ -206,22 +205,22 @@ const FinalTable = ({
                                                   pageSize
                                                 );
                                               } else {
-                                                // alert('test')
-                                                console.log(
-                                                  "test",
-                                                  tableInstance
+                                                columnEl.column.toggleSorting(
+                                                  1
                                                 );
-                                                tableInstance.setSorting({
-                                                  id: columnEl.id,
-                                                  desc: true,
-                                                });
                                               }
                                             },
                                           },
                                           {
                                             label: "Remove Sort",
                                             action: () => {
-                                              getData(pageSize);
+                                              if (manualSorting) {
+                                                getData(pageIndex, pageSize);
+                                              } else {
+                                                columnEl.column.toggleSorting(
+                                                  null
+                                                );
+                                              }
                                             },
                                           },
                                         ]
@@ -238,14 +237,14 @@ const FinalTable = ({
                                             (col) => col == columnEl.id
                                           );
 
-                                        console.log(index);
+                                        // console.log(index);
                                         // get the current order of the columns
                                         const currentOrder = [
                                           ...tableInstance.options.state
                                             .columnOrder,
                                         ];
                                         //   alert(currentOrder);
-                                        console.log("old order", currentOrder);
+                                        // console.log("old order", currentOrder);
 
                                         // if the index of the column is not 1, then move the column to the left
                                         if (index !== 1) {
@@ -257,10 +256,10 @@ const FinalTable = ({
                                           currentOrder[index - 1] = columnEl.id;
                                           currentOrder[index] = leftColumn;
 
-                                          console.log(
-                                            "new order",
-                                            currentOrder
-                                          );
+                                          // console.log(
+                                          //   "new order",
+                                          //   currentOrder
+                                          // );
 
                                           // set the new column order
                                           tableInstance.setColumnOrder(
@@ -285,7 +284,7 @@ const FinalTable = ({
                                             .columnOrder,
                                         ];
                                         //   alert(currentOrder);
-                                        console.log("old order", currentOrder);
+                                        // console.log("old order", currentOrder);
 
                                         // if the index of the column is not 0, then move the column to the left
                                         if (index !== currentOrder.length - 1) {
@@ -297,10 +296,10 @@ const FinalTable = ({
                                           currentOrder[index + 1] = columnEl.id;
                                           currentOrder[index] = rightColumn;
 
-                                          console.log(
-                                            "new order",
-                                            currentOrder
-                                          );
+                                          // console.log(
+                                          //   "new order",
+                                          //   currentOrder
+                                          // );
 
                                           // set the new column order
                                           tableInstance.setColumnOrder(
