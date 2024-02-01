@@ -1,6 +1,5 @@
 import React from "react";
-import { DebouncedInput } from "./DebouncedInput";
-
+import { DebouncedInput } from "../DebouncedInput";
 
 function Filter({ column, table }) {
   const firstValue = table

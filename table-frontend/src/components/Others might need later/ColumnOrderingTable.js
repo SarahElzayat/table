@@ -1,6 +1,6 @@
 import React from "react";
-import dataJSON from "./MOCK_DATA.json";
-import { columnDef } from "./columns";
+import dataJSON from "../MOCK_DATA.json";
+import { columnDefWithCheckBox } from "../columns";
 import {
   flexRender,
   getCoreRowModel,
@@ -8,15 +8,28 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import "./table.css";
-const PaginationTable = () => {
+
+const ColumnOrderingTable = () => {
   const finalData = React.useMemo(() => dataJSON, []);
-  const finalColumns = React.useMemo(() => columnDef, []);
+  const finalColumns = React.useMemo(() => columnDefWithCheckBox, []);
+  const [selectedRows, setSelectedRows] = React.useState({});
+  const [columnOrder, setColumnOrder] = React.useState([]);
+  const [columnVisibility, setColumnVisibility] = React.useState({});
 
   const tableInstance = useReactTable({
     columns: finalColumns,
     data: finalData,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      rowSelection: selectedRows,
+      columnOrder: columnOrder,
+      columnVisibility: columnVisibility,
+    },
+    onRowSelectionChange: setSelectedRows,
+    onColumnOrderChange: setColumnOrder,
+    onColumnVisibilityChange: setColumnVisibility,
+    enableRowSelection: true,
   });
 
   // console.log("====================================");
@@ -25,6 +38,35 @@ const PaginationTable = () => {
   // console.log("====================================");
   return (
     <>
+      <button onClick={() => setColumnOrder(["date"])}>Change Order</button>
+      <div>
+        <label>
+          Toggle Columns Visibility:{" "}
+          <input
+            {...{
+              type: "checkbox",
+              checked: tableInstance.getIsAllColumnsVisible(),
+              onChange: tableInstance.getToggleAllColumnsVisibilityHandler(),
+            }}
+          />
+        </label>
+        <hr />
+
+        {tableInstance.getAllLeafColumns().map((columnEl) => {
+          return (
+            <label key={columnEl.id}>
+              <input
+                {...{
+                  type: "checkbox",
+                  checked: columnEl.getIsVisible(),
+                  onChange: columnEl.getToggleVisibilityHandler(),
+                }}
+              />
+              {columnEl.columnDef.header}
+            </label>
+          );
+        })}
+      </div>
       <table>
         <thead>
           {tableInstance.getHeaderGroups().map((headerEl) => {
@@ -40,6 +82,16 @@ const PaginationTable = () => {
                             columnEl.column.columnDef.header,
                             columnEl.getContext()
                           )}
+                      {/* <label key={columnEl.id}>
+                        <input
+                          {...{
+                            type: "checkbox",
+                            checked: columnEl.column.getIsVisible(),
+                            onChange:
+                              columnEl.column.getToggleVisibilityHandler(),
+                          }}
+                        />
+                      </label> */}
                     </th>
                   );
                 })}
@@ -85,6 +137,16 @@ const PaginationTable = () => {
           })}
         </tfoot> */}
       </table>
+      <hr />
+      {/* <ul>
+        {tableInstance.getSelectedRowModel().flatRows.map((el) => {
+          return <li key={el.id}>{JSON.stringify(el.original)}</li>;
+        })}
+      </ul> */}
+
+      <div>
+        Selected Rows: {tableInstance.getSelectedRowModel().flatRows.length}
+      </div>
       <hr />
       <div>
         <button
@@ -151,4 +213,4 @@ const PaginationTable = () => {
   );
 };
 
-export default PaginationTable;
+export default ColumnOrderingTable;

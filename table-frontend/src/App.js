@@ -1,38 +1,42 @@
 import React from "react";
 import "./App.css";
-import FinalTable from "./components/FinalTable";
+import CustomTable from "./components/CustomTable";
 import { columnDefWithCheckBox } from "./components/columns";
 import { Logic } from "./components/logic";
 function App() {
-  const { data, total, search, sort, getUsers } = Logic();
+  const {
+    data,
+    total,
+    customFilters,
+    setCustomFilters,
+    customSorting,
+    setCustomSorting,
+    getUsers,
+  } = Logic();
 
   const [selectedRows, setSelectedRows] = React.useState({}); // rows indices
-  // const [filtering, setFiltering] = React.useState("");
-  // const [sorting, setSorting] = React.useState();
+
   return (
     <div className="App">
-      <FinalTable
+      {JSON.stringify(customFilters)}
+      <br />
+      {JSON.stringify(customSorting)}
+      <CustomTable
         data={data.data ?? []}
         columns={columnDefWithCheckBox}
         selectRows={true}
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
-        // filtering={filtering}
-        // setFiltering={setFiltering}
-        // sorting={sorting}
-        // setSorting={setSorting}
+        customFilters={customFilters}
+        setCustomFilters={setCustomFilters}
+        // customSorting={customSorting}
+        // setCustomSorting={setCustomSorting}
         pageSizeOptions={[10, 100, 15, 20, 200]}
         total={total}
-        // nextPage={data.next_page_url}
-        // previousPage={previousPage}
-        // firstPage={firstPage}
-        // lastPage={lastPage}
-        // getPage={getPage}
-        // currentPage={currentPage}
-        search={search}
-        sort={sort}
+        columnSorting={true}
         getData={getUsers}
-        // pageSize={pageSize}
+        showOrHideColumns={false}
+        loading
       />
     </div>
   );

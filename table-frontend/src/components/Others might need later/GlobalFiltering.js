@@ -1,6 +1,6 @@
 import React from "react";
-import dataJSON from "./MOCK_DATA.json";
-import { columnDef } from "./columns";
+import dataJSON from "../MOCK_DATA.json";
+import { columnDef } from "../columns";
 import {
   flexRender,
   getCoreRowModel,
@@ -8,7 +8,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import "./table.css";
-import { DebouncedInput } from "./DebouncedInput";
+import { DebouncedInput } from "../DebouncedInput";
 
 const GlobalFilteringTable = () => {
   const finalData = React.useMemo(() => dataJSON, []);

@@ -1,134 +1,260 @@
 import React from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 import { DebouncedInput } from "./DebouncedInput";
 import "./table.css";
-import Filter from "./FilterFunction";
 import PopupMenu from "./PopupMenu";
+import { IoMdAddCircle } from "react-icons/io";
+import { CustomTableLogic } from "./CustomTableLogic";
 
-const FinalTable = ({
+/**
+ *
+ * @param {data} {required} the table data to be displayed in the form of an array, with rows as objects, each field in must have the key respective to its column id
+ * @param {columns} {required} an array of objects, each object represents a column header. Each object must have an id field with the key "id" and it must match the respective key of the row, and a header with a key "header" that shows the value/component that's going to be displayed.
+ * @param {selectRows} {optional, default = false} to enable rows selection, this argument must be true.
+ * @param {selectedRows} {required if selectRows is passed as true} a state that needs to be maintained, initialized with an empty object "{}", the selected rows holds the id's of the selected rows.
+ * @param {setSelectedRows} {required if selectRows is passed as true} a setter for the selectedRows state.
+ * @param {total} {required} the total number of records to be displayed in all pages.
+ * @param {customFilters} {required if filtering is needed, and "type" must be added to any column that's need to appear in the filters} a state that needs to be maintained, initialized as an empty array "[]", each filter added to the array is in the form of an object with they keys ("id", "operator", "value"). eg: {id: "first_name", operator:"equals", value: "John Doe"}.
+ * @param {setCustomFilters} {required if filtering is needed} a setter for the customFilters state.
+ * @param {customSorting} {required if sorting is needed} a state that needs to be maintained, initialized as an empty array "[]", each sorting filter added to the array is in the form of an object with they keys ("id", "order"). The order is either "asc" or "desc" eg: {id: "first_name", order:"desc"}.
+ * @param {setCustomSorting} {required if sorting is needed} a setter for the customSorting state.
+ * @param {getData} {required} the function to fetch your data. A "props" argument needs to be passed, it holds the current page size and page index. This function is called upon loading the table and pressing "Apply" if the apply button is visible.
+ * @param {loading} {optional, default = false}  if you want to show a loading spinner, maintain this state
+ * @param {columnSorting} {optional, default = false} to sort columns "VISIBLE" data, this argument needs to be passed as true @NOTE this type of sorting is done at the client's side
+ * @param {pageSizeOptions} {optional, default = [10, 20, 30, 40, 50, 100]} an array of numbers that represent the page size options
+ * @param {selectionKey} {optional, default = "select"} the key of the column that's used for selection with checkboxes
+ * @param {showOrHideColumns} {optional, default = true} to display the show/hide columns checkboxes
+ * @returns
+ */
+const CustomTable = ({
   data,
   columns,
   selectedRows,
   setSelectedRows,
   total,
-  search,
-  sort,
+  customFilters,
+  setCustomFilters,
+  customSorting,
+  setCustomSorting,
   getData,
-  // filtering,
-  // setFiltering,
-  // sorting,
-  // setSorting,
-  // nextPage,
-  // previousPage,
-  // firstPage,
-  // lastPage,
-  // getPage,
-  // currentPage,
-  // pageSize,
+  loading = false,
   selectRows = false,
-  manualSorting = true,
+  columnSorting = false,
   pageSizeOptions = [10, 20, 30, 40, 50, 100],
+  selectionKey = "select",
+  showOrHideColumns = true,
 }) => {
-  const finalData = React.useMemo(() => data, [data]);
-  const finalColumns = React.useMemo(() => columns, []);
-  const [columnOrder, setColumnOrder] = React.useState(
-    finalColumns.map((col) => col.id)
-  );
-  const [columnVisibility, setColumnVisibility] = React.useState({});
-  //   const [selectedRows, setSelectedRows] = React.useState({});
-  //   const [filtering, setFiltering] = React.useState("");
-  const [sorting, setSorting] = React.useState();
-  // const [columnFilters, setColumnFilters] = React.useState([]);
-  const defaultColumn = React.useMemo(() => {
-    return {
-      enableColumnFilter: true,
-    };
-  }, []);
-
-  const [{ pageIndex, pageSize }, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: pageSizeOptions[0],
+  const {
+    finalColumns,
+    pageIndex,
+    pageSize,
+    tableInstance,
+    popupFilterVisible,
+    setPopupFilterVisible,
+    popupFilter,
+    setPopupFilter,
+    sortingVisible,
+    setSortingVisible,
+    sortingColumn,
+    setSortingColumn,
+    handleAddSorting,
+    handleCloseSorting,
+    handleRemoveSorting,
+    handleAddFilter,
+    handleRemoveFilter,
+  } = CustomTableLogic({
+    data,
+    columns,
+    selectedRows,
+    setSelectedRows,
+    total,
+    customFilters,
+    setCustomFilters,
+    customSorting,
+    setCustomSorting,
+    getData,
+    columnSorting,
+    pageSizeOptions,
   });
-
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  );
-
-  const tableInstance = useReactTable({
-    columns: finalColumns,
-    data: finalData,
-    defaultColumn: defaultColumn,
-    pageCount: Math.ceil(total / pageSize),
-    manualPagination: true,
-    manualSorting: manualSorting,
-    getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getRowId: (row) => row.id,
-    state: {
-      rowSelection: selectedRows,
-      columnOrder: columnOrder,
-      columnVisibility: columnVisibility,
-
-      // globalFilter: filtering,
-      sorting: sorting,
-      // columnFilters: columnFilters,
-      // pagination: {
-      //   pageIndex: 0,
-      //   pageSize: pageSizeOptions[0],
-      // },
-      pagination: pagination,
-    },
-    onRowSelectionChange: setSelectedRows,
-    enableRowSelection: true,
-    onColumnOrderChange: setColumnOrder,
-    onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
-
-    // onGlobalFilterChange: setFiltering,
-    onSortingChange: setSorting,
-    // onColumnFiltersChange: setColumnFilters,
-  });
-
-  // get page with page index and page size when the page index or page size changes
-  React.useEffect(() => {
-    // debugger;
-    getData(pageIndex, pageSize);
-  }, [pageIndex, pageSize]);
 
   return (
     <>
-      <br />
-      <hr />
-      <div>
-        <h6>{JSON.stringify(pagination)}</h6>
-        <label>
-          Toggle All Columns Visibility:{" "}
-          <input
-            {...{
-              type: "checkbox",
-              checked: tableInstance.getIsAllColumnsVisible(),
-              onChange: tableInstance.getToggleAllColumnsVisibilityHandler(),
-            }}
-          />
-        </label>
-        <hr />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+          }}
+        >
+          {customSorting != undefined && (
+            <button onClick={() => setSortingVisible(!sortingVisible)}>
+              ↑↓
+            </button>
+          )}
 
-        {tableInstance.getAllLeafColumns().map((columnEl) => {
-          return (
-            selectRows && (
+          {sortingVisible && (
+            <div
+              style={{
+                backgroundColor: "rgba(150,150,150 ,0.9)",
+                position: "absolute",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                left: 0,
+                top: "100%",
+              }}
+            >
+              <select
+                onChange={(e) => {
+                  setSortingColumn({
+                    id: e.target.value,
+                    order: null,
+                  });
+                }}
+              >
+                <option value="" selected disabled hidden>
+                  Choose Column
+                </option>
+
+                {/* get the options from the table's headers & check if the can sort*/}
+                {tableInstance.getAllLeafColumns().map((columnEl) => {
+                  if (columnEl.getCanSort())
+                    return (
+                      <option key={columnEl.id} value={columnEl.id}>
+                        {columnEl.columnDef.header}
+                      </option>
+                    );
+                })}
+              </select>
+              <select
+                onChange={(e) => {
+                  // alert(e.target.value);
+                  setSortingColumn({
+                    ...sortingColumn,
+                    order: e.target.value,
+                  });
+                }}
+              >
+                <option value="" selected disabled hidden>
+                  Choose Order
+                </option>
+
+                {/* only ascending and descending options */}
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+              <button onClick={handleAddSorting}>+</button>
+              <button onClick={handleCloseSorting}>X</button>
+            </div>
+          )}
+        </div>
+        <div style={{ width: 10 }}></div>
+        <div style={{ position: "relative", display: "flex" }}>
+          {customFilters != undefined && (
+            <button onClick={() => setPopupFilterVisible(!popupFilterVisible)}>
+              <IoMdAddCircle size={25} color="#3F51B5" />
+            </button>
+          )}
+          {popupFilterVisible && (
+            <div
+              style={{
+                backgroundColor: "rgba(150,150,150 ,0.9)",
+                position: "absolute",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                left: 0,
+                top: "100%",
+              }}
+            >
+              <select
+                onChange={(e) => {
+                  setPopupFilter({
+                    id: e.target.value,
+                  });
+                }}
+              >
+                <option value="" selected disabled hidden>
+                  Choose Column
+                </option>
+                {finalColumns.map((columnEl) => {
+                  if (columnEl?.type)
+                    return (
+                      <option key={columnEl.id} value={columnEl.id}>
+                        {columnEl.header}
+                      </option>
+                    );
+                })}
+              </select>
+              <select
+                onChange={(e) => {
+                  setPopupFilter({
+                    ...popupFilter,
+                    operator: e.target.value,
+                  });
+                }}
+              >
+                <option value="" selected disabled hidden>
+                  Choose Operator
+                </option>
+
+                {/* show the operators based on the chosen column */}
+                {finalColumns
+                  .find((col) => col.id == popupFilter.id)
+                  ?.type?.operators.map((operator) => (
+                    <option key={operator.label} value={operator.value}>
+                      {operator.label}
+                    </option>
+                  ))}
+              </select>
+
+              {/* based on the chosen column's type, it's either an text input field, numeric or a calendar*/}
+
+              <input
+                type={
+                  // get the type of the chosen column
+                  finalColumns.find((col) => col.id == popupFilter.id)?.type?.id
+                }
+                // set the value of the popup filter
+                onChange={(e) => {
+                  // set the value of the popup filter
+                  setPopupFilter({
+                    ...popupFilter,
+                    value: e.target.value.toString(),
+                  });
+                }}
+                // on pressing enter, add the filter to the filters array and close the menu
+                onKeyUp={(e) => {
+                  if (e.key == "Enter") {
+                    handleAddFilter();
+                  }
+                }}
+              />
+
+              <button onClick={handleAddFilter}>+</button>
+              <button onClick={() => setPopupFilterVisible(false)}>X</button>
+            </div>
+          )}
+        </div>
+
+        {/* apply button */}
+
+        {(customFilters != undefined || customSorting != undefined) && (
+          <button onClick={() => getData({ pageIndex, pageSize })}>
+            Apply
+          </button>
+        )}
+      </div>
+      {showOrHideColumns &&
+        tableInstance.getAllLeafColumns().map((columnEl) => {
+          if (columnEl.id != selectionKey)
+            return (
               <label key={columnEl.id}>
                 <input
                   {...{
@@ -139,11 +265,8 @@ const FinalTable = ({
                 />
                 {columnEl.columnDef.header}
               </label>
-            )
-          );
+            );
         })}
-      </div>
-      <hr />
       <hr />
       <table>
         <thead>
@@ -153,8 +276,8 @@ const FinalTable = ({
               <tr key={headerEl.id}>
                 {headerEl.headers.map((columnEl) => {
                   if (
-                    columnEl.id !== "select" ||
-                    (columnEl.id == "select" && selectRows)
+                    columnEl.id !== selectionKey ||
+                    (columnEl.id == selectionKey && selectRows)
                   ) {
                     return (
                       <th key={columnEl.id} colSpan={columnEl.colSpan}>
@@ -174,53 +297,30 @@ const FinalTable = ({
                                     columnEl.getContext()
                                   )}
 
-                              {columnEl.id != "select" && (
+                              {columnEl.id != selectionKey && (
                                 <PopupMenu
                                   options={[
-                                    ...(columnEl.column.getCanSort()
+                                    ...(columnEl.column.getCanSort() &&
+                                    columnSorting
                                       ? [
                                           {
                                             label: "Sort Ascending",
                                             action: () => {
-                                              if (manualSorting) {
-                                                sort(
-                                                  columnEl.id,
-                                                  "asc",
-                                                  pageSize
-                                                );
-                                              } else {
-                                                columnEl.column.toggleSorting(
-                                                  0
-                                                );
-                                              }
+                                              columnEl.column.toggleSorting(0);
                                             },
                                           },
                                           {
                                             label: "Sort Descending",
                                             action: () => {
-                                              if (manualSorting) {
-                                                sort(
-                                                  columnEl.id,
-                                                  "desc",
-                                                  pageSize
-                                                );
-                                              } else {
-                                                columnEl.column.toggleSorting(
-                                                  1
-                                                );
-                                              }
+                                              columnEl.column.toggleSorting(1);
                                             },
                                           },
                                           {
                                             label: "Remove Sort",
                                             action: () => {
-                                              if (manualSorting) {
-                                                getData(pageIndex, pageSize);
-                                              } else {
-                                                columnEl.column.toggleSorting(
-                                                  null
-                                                );
-                                              }
+                                              columnEl.column.toggleSorting(
+                                                null
+                                              );
                                             },
                                           },
                                         ]
@@ -229,8 +329,6 @@ const FinalTable = ({
                                     {
                                       label: "Move Left",
                                       action: () => {
-                                        // change the order of the columns
-
                                         // get the index of the column
                                         const index =
                                           tableInstance.options.state.columnOrder.findIndex(
@@ -243,9 +341,6 @@ const FinalTable = ({
                                           ...tableInstance.options.state
                                             .columnOrder,
                                         ];
-                                        //   alert(currentOrder);
-                                        // console.log("old order", currentOrder);
-
                                         // if the index of the column is not 1, then move the column to the left
                                         if (index !== 1) {
                                           // get the column to the left
@@ -255,11 +350,6 @@ const FinalTable = ({
                                           // swap the column with the column to the left
                                           currentOrder[index - 1] = columnEl.id;
                                           currentOrder[index] = leftColumn;
-
-                                          // console.log(
-                                          //   "new order",
-                                          //   currentOrder
-                                          // );
 
                                           // set the new column order
                                           tableInstance.setColumnOrder(
@@ -271,8 +361,6 @@ const FinalTable = ({
                                     {
                                       label: "Move Right",
                                       action: () => {
-                                        // change the order of the columns
-
                                         // get the index of the column
                                         const index =
                                           tableInstance.options.state.columnOrder.findIndex(
@@ -283,8 +371,6 @@ const FinalTable = ({
                                           ...tableInstance.options.state
                                             .columnOrder,
                                         ];
-                                        //   alert(currentOrder);
-                                        // console.log("old order", currentOrder);
 
                                         // if the index of the column is not 0, then move the column to the left
                                         if (index !== currentOrder.length - 1) {
@@ -295,11 +381,6 @@ const FinalTable = ({
                                           // swap the column with the column to the right
                                           currentOrder[index + 1] = columnEl.id;
                                           currentOrder[index] = rightColumn;
-
-                                          // console.log(
-                                          //   "new order",
-                                          //   currentOrder
-                                          // );
 
                                           // set the new column order
                                           tableInstance.setColumnOrder(
@@ -312,13 +393,8 @@ const FinalTable = ({
                                 />
                               )}
                             </div>
-                            {columnEl.column.getCanFilter() ? (
+                            {/* {columnEl.column.getCanFilter() ? (
                               <div>
-                                {/* <Filter
-                                    column={columnEl.column}
-                                    table={tableInstance}
-                                  /> */}
-                                {/* <h6>{columnEl.id}</h6> */}
                                 <DebouncedInput
                                   debounce={500}
                                   placeholder={"Search..."}
@@ -333,12 +409,12 @@ const FinalTable = ({
                                       getData(pageSize);
                                     } else {
                                       columnEl.column.setFilterValue(value);
-                                      search(columnEl.id, value, pageSize);
+                                      // search(columnEl.id, value, pageSize);
                                     }
                                   }}
                                 />
                               </div>
-                            ) : null}
+                            ) : null} */}
                           </>
                         }
                       </th>
@@ -356,8 +432,8 @@ const FinalTable = ({
               <tr key={rowEl.id}>
                 {rowEl.getVisibleCells().map((cellEl) => {
                   if (
-                    cellEl.column.id !== "select" ||
-                    (cellEl.column.id == "select" && selectRows)
+                    cellEl.column.id !== selectionKey ||
+                    (cellEl.column.id == selectionKey && selectRows)
                   ) {
                     return (
                       <td key={cellEl.id}>
@@ -365,7 +441,6 @@ const FinalTable = ({
                           cellEl.column.columnDef.cell,
                           cellEl.getContext()
                         )}
-                        {/* <h6>{rowEl.id}</h6> */}
                       </td>
                     );
                   }
@@ -395,18 +470,16 @@ const FinalTable = ({
       </table>
       <hr />
       <div>Total Results: {total}</div>
-      <hr />
-      <div>
-        Selected Rows: {tableInstance.getSelectedRowModel().rows.length}
-        <br />
-        Selected Rows: {JSON.stringify(selectedRows)}
-      </div>
+      {selectRows && (
+        <>
+          <hr />
+          {/* Selected Rows: {tableInstance.getSelectedRowModel().rows.length} */}
+          Selected Rows: {Object.keys(selectedRows).length}
+        </>
+      )}
       <hr />
       <div>
         <button
-          // onClick={() => getPage(firstPage)}
-          // disabled={!tableInstance.getCanPreviousPage()}
-          // disabled={currentPage == 1}
           onClick={() => tableInstance.setPageIndex(0)}
           disabled={!tableInstance.getCanPreviousPage()}
         >
@@ -479,4 +552,4 @@ const FinalTable = ({
   );
 };
 
-export default FinalTable;
+export default CustomTable;

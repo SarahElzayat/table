@@ -1,27 +1,20 @@
-import React, { useState } from "react";
-import dataJSON from "./MOCK_DATA.json";
-import { columnDefSorting } from "./columns";
+import React from "react";
+import dataJSON from "../MOCK_DATA.json";
+import { columnDef } from "../columns";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getSortedRowModel,
 } from "@tanstack/react-table";
 import "./table.css";
-const SortingTable = () => {
+const BasicTable = () => {
   const finalData = React.useMemo(() => dataJSON, []);
-  const finalColumns = React.useMemo(() => columnDefSorting, []);
-  const [sorting, setSorting] = useState();
+  const finalColumns = React.useMemo(() => columnDef, []);
 
   const tableInstance = useReactTable({
     columns: finalColumns,
     data: finalData,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: sorting, // state binding
-    },
-    onSortingChange: setSorting,
   });
 
   // console.log("====================================");
@@ -38,23 +31,13 @@ const SortingTable = () => {
               <tr key={headerEl.id}>
                 {headerEl.headers.map((columnEl) => {
                   return (
-                    <th
-                      key={columnEl.id}
-                      colSpan={columnEl.colSpan}
-                      onClick={columnEl.column.getToggleSortingHandler()}
-                    >
+                    <th key={columnEl.id} colSpan={columnEl.colSpan}>
                       {columnEl.isPlaceholder
                         ? null
                         : flexRender(
                             columnEl.column.columnDef.header,
                             columnEl.getContext()
                           )}
-                      {
-                        {
-                          asc: "↑", // ascending
-                          desc: "↓", // descending
-                        }[columnEl.column.getIsSorted() ?? null]
-                      }
                     </th>
                   );
                 })}
@@ -104,4 +87,4 @@ const SortingTable = () => {
   );
 };
 
-export default SortingTable;
+export default BasicTable;

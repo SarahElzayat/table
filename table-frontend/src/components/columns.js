@@ -1,6 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import moment from "moment";
-import IndeterminateCheckbox from "./Chechbox";
+import IndeterminateCheckbox from "./Others might need later/Chechbox";
+import { FILTER_TYPES } from "./constants";
 
 const columnHelper = createColumnHelper();
 
@@ -89,6 +90,7 @@ export const columnDef = [
 export const columnDefWithCheckBox = [
   {
     id: "select",
+    // canFilter: false,
     header: ({ table }) => (
       <IndeterminateCheckbox
         {...{
@@ -108,29 +110,37 @@ export const columnDefWithCheckBox = [
             onChange: row.getToggleSelectedHandler(),
           }}
         />
-        {/* {console.log(row)} */}
       </>
     ),
   },
-  { id: "id", accessorKey: "id", header: "Id" },
+  {
+    id: "id",
+    // type: FILTER_TYPES.NUMBER,
+    accessorKey: "id",
+    header: "Id",
+  },
   {
     id: "first_name",
     accessorFn: (row) => `${row.first_name}`,
-    // id: "first_name",
     header: "First Name",
   },
   {
     id: "last_name",
+    type: FILTER_TYPES.TEXT,
     accessorKey: "last_name",
     header: "Last Name",
   },
   {
     id: "email",
+    // canFilter: true,
+    type: FILTER_TYPES.TEXT,
     accessorKey: "email",
     header: "Email",
   },
   {
-    id: "phone_number",
+    id: "date",
+    // canFilter: true,
+    type: FILTER_TYPES.DATE,
     accessorKey: "date",
     header: "Date",
     cell: ({ getValue }) => moment(new Date(getValue())).format("MMM Do YY"),

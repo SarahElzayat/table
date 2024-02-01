@@ -1,36 +1,27 @@
-import React from "react";
-import dataJSON from "./MOCK_DATA.json";
-import { columnDefWithFilters } from "./columns";
+import React, { useState } from "react";
+import dataJSON from "../MOCK_DATA.json";
+import { columnDefSorting } from "../columns";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getFilteredRowModel,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 import "./table.css";
-import { DebouncedInput } from "./DebouncedInput";
-import Filter from "./FilterFunction";
-
-const ColumnFilteringTable = () => {
+const SortingTable = () => {
   const finalData = React.useMemo(() => dataJSON, []);
-  const finalColumns = React.useMemo(() => columnDefWithFilters, []);
-  const defaultColumn = React.useMemo(() => {
-    return {
-      enableColumnFilter: false,
-    };
-  }, []);
-  const [columnFilters, setColumnFilters] = React.useState([]);
+  const finalColumns = React.useMemo(() => columnDefSorting, []);
+  const [sorting, setSorting] = useState();
 
   const tableInstance = useReactTable({
     columns: finalColumns,
     data: finalData,
-    defaultColumn: defaultColumn,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
-      columnFilters: columnFilters, // state binding
+      sorting: sorting, // state binding
     },
-    onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
   });
 
   // console.log("====================================");
@@ -39,11 +30,6 @@ const ColumnFilteringTable = () => {
   // console.log("====================================");
   return (
     <>
-      {/* <DebouncedInput
-        value={filtering ?? ""}
-        onChange={(value) => setFiltering(String(value))}
-        placeholder={"Search..."}
-      /> */}
       <table>
         <thead>
           {tableInstance.getHeaderGroups().map((headerEl) => {
@@ -51,25 +37,24 @@ const ColumnFilteringTable = () => {
             return (
               <tr key={headerEl.id}>
                 {headerEl.headers.map((columnEl) => {
-                  console.log("col el", columnEl);
                   return (
-                    <th key={columnEl.id} colSpan={columnEl.colSpan}>
-                      {columnEl.isPlaceholder ? null : (
-                        <>
-                          {flexRender(
+                    <th
+                      key={columnEl.id}
+                      colSpan={columnEl.colSpan}
+                      onClick={columnEl.column.getToggleSortingHandler()}
+                    >
+                      {columnEl.isPlaceholder
+                        ? null
+                        : flexRender(
                             columnEl.column.columnDef.header,
                             columnEl.getContext()
                           )}
-                          {columnEl.column.getCanFilter() ? (
-                            <div>
-                              <Filter
-                                column={columnEl.column}
-                                table={tableInstance}
-                              />
-                            </div>
-                          ) : null}
-                        </>
-                      )}
+                      {
+                        {
+                          asc: "↑", // ascending
+                          desc: "↓", // descending
+                        }[columnEl.column.getIsSorted() ?? null]
+                      }
                     </th>
                   );
                 })}
@@ -119,4 +104,4 @@ const ColumnFilteringTable = () => {
   );
 };
 
-export default ColumnFilteringTable;
+export default SortingTable;
