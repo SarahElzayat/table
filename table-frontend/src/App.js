@@ -3,6 +3,7 @@ import "./App.css";
 import CustomTable from "./components/CustomTable";
 import { columnDefWithCheckBox } from "./components/columns";
 import { Logic } from "./components/logic";
+
 function App() {
   const {
     data,
@@ -18,6 +19,8 @@ function App() {
 
   return (
     <div className="App">
+      <br />
+      <br />
       {JSON.stringify(customFilters)}
       <br />
       {JSON.stringify(customSorting)}
@@ -29,14 +32,14 @@ function App() {
         setSelectedRows={setSelectedRows}
         customFilters={customFilters}
         setCustomFilters={setCustomFilters}
-        // customSorting={customSorting}
-        // setCustomSorting={setCustomSorting}
+        customSorting={customSorting}
+        setCustomSorting={setCustomSorting}
         pageSizeOptions={[10, 100, 15, 20, 200]}
         total={total}
         columnSorting={true}
         getData={getUsers}
         showOrHideColumns={false}
-        loading
+        // loading
       />
     </div>
   );

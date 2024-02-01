@@ -6,41 +6,52 @@ import {
 } from "@tanstack/react-table";
 
 export const CustomTableLogic = ({
-  data,
-  columns,
-  selectedRows,
-  setSelectedRows,
-  total,
-  customFilters,
-  setCustomFilters,
-  customSorting,
-  setCustomSorting,
-  getData,
-  columnSorting,
-  pageSizeOptions,
+  data, // Array of objects representing table data
+  columns, // Array of objects defining table columns
+  selectRows, // Boolean indicating if row selection is enabled
+  selectedRows, // Object tracking the selected rows in the table
+  setSelectedRows, // Function to update the selectedRows state
+  total, // Total number of records, for pagination purposes
+  customFilters, // Array of custom filters applied to the table
+  setCustomFilters, // Function to update customFilters state
+  customSorting, // Array of custom sorting rules applied to the table
+  setCustomSorting, // Function to update customSorting state
+  getData, // Function to fetch table data
+  columnSorting, // Boolean indicating if column sorting is enabled
+  pageSizeOptions, // Array of numbers representing page size options
 }) => {
+  // Memoize data and columns to prevent unnecessary re-renders
   const finalData = React.useMemo(() => data, [data]);
   const finalColumns = React.useMemo(() => columns, []);
+
+  // State for managing the visibility of the popup filter UI
   const [popupFilterVisible, setPopupFilterVisible] = React.useState(false);
-  const [popupFilter, setPopupFilter] = React.useState(
-    // get the first column that has a type
-    {
-      id: null,
-      operator: null,
-      // get the first operator of the first column that has a type
-      value: null,
-    }
-  );
+
+  // State for managing the current popup filter's configuration
+  const [popupFilter, setPopupFilter] = React.useState({
+    id: null,
+    operator: null,
+    value: null,
+  });
+
+  // State for managing the visibility of the sorting UI
   const [sortingVisible, setSortingVisible] = React.useState(false);
+
+  // State for managing the current sorting column's configuration
   const [sortingColumn, setSortingColumn] = React.useState({
     id: null,
     order: null,
   });
 
+  // State for tracking the order of columns
   const [columnOrder, setColumnOrder] = React.useState(
     finalColumns.map((col) => col.id)
   );
+
+  // State for managing column visibility
   const [columnVisibility, setColumnVisibility] = React.useState({});
+
+  // State for managing sorting configurations
   const [sorting, setSorting] = React.useState();
   // const defaultColumn = React.useMemo(() => {
   //   return {
@@ -48,11 +59,13 @@ export const CustomTableLogic = ({
   //   };
   // }, []);
 
+  // State for managing pagination
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: pageSizeOptions[0],
   });
 
+  // Memoize pagination configuration
   const pagination = React.useMemo(
     () => ({
       pageIndex,
@@ -61,13 +74,13 @@ export const CustomTableLogic = ({
     [pageIndex, pageSize]
   );
 
+  // Initialize the table instance with react-table hooks
   const tableInstance = useReactTable({
     columns: finalColumns,
     data: finalData,
     // defaultColumn: defaultColumn,
-    pageCount: Math.ceil(total / pageSize),
-    manualPagination: true,
-    manualSorting: !columnSorting,
+    pageCount: Math.ceil(total / pageSize), // Calculate page count
+    manualPagination: true, // Enable manual pagination
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getRowId: (row) => row.id,
@@ -78,13 +91,15 @@ export const CustomTableLogic = ({
       sorting: sorting,
       pagination: pagination,
     },
-    onRowSelectionChange: setSelectedRows,
-    enableRowSelection: true,
-    onColumnOrderChange: setColumnOrder,
-    onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onRowSelectionChange: setSelectedRows, // Handler for row selection changes
+    enableRowSelection: selectRows, // Enable row selection feature
+    onColumnOrderChange: setColumnOrder, // Handler for column order changes
+    onColumnVisibilityChange: setColumnVisibility, // Handler for column visibility changes
+    onPaginationChange: setPagination, // Handler for pagination changes
+    onSortingChange: setSorting, // Handler for sorting changes
   });
+
+  // Function to handle adding a new sorting configuration
   const handleAddSorting = () => {
     // add the filter to the filters array
     if (sortingColumn.id != null && sortingColumn.order != null) {
@@ -98,6 +113,7 @@ export const CustomTableLogic = ({
     }
   };
 
+  // Function to close the sorting UI and clear the current sorting configuration
   const handleCloseSorting = () => {
     setSortingVisible(false);
     // clear the sorting column
