@@ -25,12 +25,12 @@ const AppWithNav = ({ routes, logo }) => {
           >
             <Navbar active={showSidebar} routes={routes} />
             {/* <div > */}
-            {/* <div className="mainContainer"> */}
-            <Routes>
-              <Route path="/" exact element={<PageTemplate title="Home" />} />
-              <Route path="/about" element={<PageTemplate title="About" />} />
-            </Routes>
-            {/* </div> */}
+            <div className="bodyBgd">
+              <Routes>
+                <Route path="/" exact element={<PageTemplate title="Home" />} />
+                <Route path="/about" element={<PageTemplate title="About" />} />
+              </Routes>
+            </div>
           </div>
         </Router>
       </div>

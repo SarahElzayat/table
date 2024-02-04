@@ -11,9 +11,7 @@ const Navbar = ({ active, routes, withIcons = true }) => {
         {routes.map((route, index) => (
           <li key={index}>
             <Link to={route.path}>
-              {/* {active ? route.name : withIcons ? route?.icon : null} */}
               {withIcons && route?.icon}
-              {/* {active && route.icon} */}
               {active && route.name}
             </Link>
           </li>

@@ -13,27 +13,22 @@ code {
 }
 
 header {
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   padding: 15px;
   background-color: #282c34;
   z-index: 4;
+  box-sizing: border-box;
 }
 
 .sidenav {
   box-sizing: border-box;
-  width: 0;
+  width: 50px;
   display: block;
-  z-index: 2;
-  flex:1;
-  /* max-height: 100vh; */
-  position: -webkit-sticky; 
-
-  position: sticky;
-  /* height: max-content; */
-  padding-top: 70px;
+  visibility: none;
+  height: calc(100vh - 75px);
+  /* padding-top: 70px; */
   /* position: fixed; */
-
   background-color: #282c34;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -45,8 +40,8 @@ header {
 }
 .sidenav.active {
   width: 250px;
-  display: block;
-  /* left: 0; */
+  visibility: visible;
+  /* padding-left: 50px; */
 }
 
 .sidenav::-webkit-scrollbar,
@@ -108,16 +103,20 @@ header svg {
 .sidenav svg {
   font-size: 25px;
   padding: 10px;
+  flex-shrink: 0;
 }
 
 .appContainer {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #042c7c;
-  
 }
 
-.mainContainer {
+.bodyBgd {
   flex: 4;
+  height: calc(100vh - 75px);
+  overflow-y: scroll;
+
+  /* position: relative; */
 }

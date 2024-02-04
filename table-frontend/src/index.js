@@ -25,66 +25,7 @@ root.render(
           path: "/about",
           icon: <MdOutlinePermDeviceInformation />,
         },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
-        {
-          name: "About",
-          path: "/about",
-          icon: <MdOutlinePermDeviceInformation />,
-        },
+
         {
           name: "Services",
           path: "/services",
