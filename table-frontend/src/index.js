@@ -1,13 +1,97 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import reportWebVitals from "./reportWebVitals";
+import AppWithNav from "./AppWithNav";
+import tempLogo from "./components/Logo.png";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { MdHomeFilled } from "react-icons/md";
+import { MdOutlinePermDeviceInformation } from "react-icons/md";
+import { MdOutlineMiscellaneousServices } from "react-icons/md";
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <AppWithNav
+      logo={tempLogo}
+      routes={[
+        {
+          name: "Home",
+          path: "/",
+          icon: <MdHomeFilled />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+        },
+        {
+          name: "Services",
+          path: "/services",
+          icon: <MdOutlineMiscellaneousServices />,
+        },
+      ]}
+    />
   </React.StrictMode>
 );
 

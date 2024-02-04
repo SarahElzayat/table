@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  padding: 15px;
+  background-color: #282c34;
+  z-index: 4;
+}
+
+.sidenav {
+  box-sizing: border-box;
+  width: 0;
+  display: block;
+  z-index: 2;
+  flex:1;
+  /* max-height: 100vh; */
+  position: -webkit-sticky; 
+
+  position: sticky;
+  /* height: max-content; */
+  padding-top: 70px;
+  /* position: fixed; */
+
+  background-color: #282c34;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: all 0.5s;
+}
+
+.sidenav.withIcons {
+  width: 50px;
+}
+.sidenav.active {
+  width: 250px;
+  display: block;
+  /* left: 0; */
+}
+
+.sidenav::-webkit-scrollbar,
+.sidenavWithIcons::-webkit-scrollbar {
+  width: 0px;
+
+  background-color: #0a38ee;
+}
+/* 
+.sidenav::-webkit-scrollbar-track {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidenav::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+} */
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.2rem;
+  padding: 10px 0;
+  display: block;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 6px;
+}
+
+ul li a:hover,
+ul li a.active {
+  background: #61dafb;
+}
+
+.logo {
+  width: 40px;
+  margin-right: 150px;
+}
+
+header svg {
+  font-size: 30px;
+  fill: white;
+  cursor: pointer;
+}
+
+.sidenav svg {
+  font-size: 25px;
+  padding: 10px;
+}
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #042c7c;
+  
+}
+
+.mainContainer {
+  flex: 4;
+}
