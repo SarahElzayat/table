@@ -7,6 +7,23 @@ import PageTemplate from "./components/header and sidebar/PageTemplate";
 
 const AppWithNav = ({ routes, logo }) => {
   const [showSidebar, setShowSidebar] = React.useState(true);
+
+  // Function to recursively render routes and their children
+  const renderRoutes = (routes) => {
+    return routes.map((route, index) => {
+      if (route.children) {
+        // Render parent route and recursively render children routes inside the parent's element
+        return (
+          <Route key={index} path={route.path} element={route.element}>
+            {renderRoutes(route.children)} {/* Recursive call for children */}
+          </Route>
+        );
+      } else {
+        // Render route without children
+        return <Route key={index} path={route.path} element={route.element} />;
+      }
+    });
+  };
   return (
     <>
       <div className="appContainer">
@@ -24,11 +41,9 @@ const AppWithNav = ({ routes, logo }) => {
             }}
           >
             <Navbar active={showSidebar} routes={routes} />
-            {/* <div > */}
             <div className="bodyBgd">
               <Routes>
-                <Route path="/" exact element={<PageTemplate title="Home" />} />
-                <Route path="/about" element={<PageTemplate title="About" />} />
+                {renderRoutes(routes)} {/* Use the renderRoutes function */}
               </Routes>
             </div>
           </div>
