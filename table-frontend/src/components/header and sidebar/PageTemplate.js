@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom"
 
 const PageTemplate = ({ title }) => {
   return (
@@ -12,6 +13,8 @@ const PageTemplate = ({ title }) => {
       >
         {title}
       </h1>
+      <Outlet />
+
     </div>
   );
 };

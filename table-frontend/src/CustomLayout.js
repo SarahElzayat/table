@@ -1,11 +1,10 @@
 import React from "react";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./AppWithNav.css";
-import PageTemplate from "./components/header and sidebar/PageTemplate";
+import "./CustomLayout.css";
 
-const AppWithNav = ({ routes, logo }) => {
+const CustomLayout = ({ routes, sidebarItems, logo }) => {
   const [showSidebar, setShowSidebar] = React.useState(true);
 
   // Function to recursively render routes and their children
@@ -40,11 +39,10 @@ const AppWithNav = ({ routes, logo }) => {
               flexDirection: "row",
             }}
           >
-            <Navbar active={showSidebar} routes={routes} />
+            <Sidebar active={showSidebar} routes={sidebarItems} />
+
             <div className="bodyBgd">
-              <Routes>
-                {renderRoutes(routes)} {/* Use the renderRoutes function */}
-              </Routes>
+              <Routes>{renderRoutes(routes)}</Routes>
             </div>
           </div>
         </Router>
@@ -53,4 +51,4 @@ const AppWithNav = ({ routes, logo }) => {
   );
 };
 
-export default AppWithNav;
+export default CustomLayout;

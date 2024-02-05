@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import reportWebVitals from "./reportWebVitals";
-import AppWithNav from "./AppWithNav";
+import CustomLayout from "./CustomLayout";
 import tempLogo from "./components/Logo.png";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdHomeFilled } from "react-icons/md";
@@ -13,7 +13,7 @@ import PageTemplate from "./components/header and sidebar/PageTemplate";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AppWithNav
+    <CustomLayout
       logo={tempLogo}
       routes={[
         {
@@ -21,21 +21,74 @@ root.render(
           path: "/",
           icon: <MdHomeFilled />,
           exact: true,
-          element: <PageTemplate title="Home" />,
+          // element: <PageTemplate title="Home" />,
           children: [
             {
               name: "Home 1",
               path: "/home1",
-              // element: <PageTemplate title="Home 1" />,
+              element: <PageTemplate title="Home 1" />,
+              icon: <MdHomeFilled />,
               children: [
                 {
+                  icon: <MdHomeFilled />,
+
                   name: "Home 1.1",
-                  path: "/home1.1",
+                  path: "/home11",
                   element: <PageTemplate title="Home 1.1" />,
                 },
                 {
+                  icon: <MdHomeFilled />,
                   name: "Home 1.2",
-                  path: "/home1.2",
+                  path: "/home12",
+                  element: <PageTemplate title="Home 1.2" />,
+                },
+              ],
+            },
+            {
+              name: "Home 2",
+              path: "/home2",
+              element: <PageTemplate title="Home 2" />,
+            },
+          ],
+        },
+        {
+          name: "About",
+          path: "/about",
+          icon: <MdOutlinePermDeviceInformation />,
+          element: <PageTemplate title="About" />,
+        },
+
+        {
+          name: "Services",
+          path: "/services",
+          icon: <MdOutlineMiscellaneousServices />,
+        },
+      ]}
+      sidebarItems={[
+        {
+          name: "Home",
+          path: "/",
+          icon: <MdHomeFilled />,
+          exact: true,
+          // element: <PageTemplate title="Home" />,
+          children: [
+            {
+              name: "Home 1",
+              path: "/home1",
+              element: <PageTemplate title="Home 1" />,
+              icon: <MdHomeFilled />,
+              children: [
+                {
+                  icon: <MdHomeFilled />,
+
+                  name: "Home 1.1",
+                  path: "/home11",
+                  element: <PageTemplate title="Home 1.1" />,
+                },
+                {
+                  icon: <MdHomeFilled />,
+                  name: "Home 1.2",
+                  path: "/home12",
                   element: <PageTemplate title="Home 1.2" />,
                 },
               ],
